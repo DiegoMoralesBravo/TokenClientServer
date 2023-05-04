@@ -1,11 +1,11 @@
 package App;
 
-public class Client {
-  private Client next;
+public class Node {
+  private Node next;
   private boolean token = false;
   private String name;
 
-  public Client(Client next, String name) {
+  public Node(Node next, String name) {
     this.next = next;
     this.name = name;
   }
@@ -14,7 +14,7 @@ public class Client {
     return name;
   }
 
-  public Client getNext() {
+  public Node getNext() {
     return next;
   }
 
@@ -22,7 +22,7 @@ public class Client {
     return token;
   }
 
-  public void setNext(Client next) {
+  public void setNext(Node next) {
     this.next = next;
   }
 

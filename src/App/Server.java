@@ -1,7 +1,7 @@
 package App;
 
 public class Server {
-  private Client tail;
+  private Node tail;
   private int size;
 
   public Server() {
@@ -9,11 +9,11 @@ public class Server {
     this.size = 0;
   }
 
-  public void setTail(Client tail) {
+  public void setTail(Node tail) {
     this.tail = tail;
   }
 
-  public Client getTail() {
+  public Node getTail() {
     return tail;
   }
 
@@ -28,12 +28,12 @@ public class Server {
     return false;
   }
 
-  public Client first() {
+  public Node first() {
     return this.tail.getNext();
   }
 
-  public Client dequeue() {
-    Client oldhead = this.tail.getNext();
+  public Node dequeue() {
+    Node oldhead = this.tail.getNext();
     if (this.size == 1) {
       this.tail = null;
     } else {
@@ -44,7 +44,7 @@ public class Server {
   }
 
   public void enqueue(String name) {
-    Client newest = new Client(null, name);
+    Node newest = new Node(null, name);
     if (this.is_empty()) {
       newest.setNext(newest);
     } else {
