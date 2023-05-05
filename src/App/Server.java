@@ -1,8 +1,11 @@
 package App;
 
+import java.awt.Color;
+
 public class Server extends Thread {
   private Node tail;
   private int size;
+  private VentanaServidor ventana;
 
   public Server() {
     this.tail = null;
@@ -32,8 +35,9 @@ public class Server extends Thread {
     return this.tail.getNext();
   }
 
-  public void enqueue(java.net.Socket Socket) {
-    Node newest = new Node(null, Socket);
+  public void enqueue(java.net.Socket Socket, VentanaServidor ventana) {
+    this.ventana = ventana;
+    Node newest = new Node(null, Socket, ventana);
     newest.start();
     if (this.is_empty()) {
       newest.setNext(newest);
@@ -51,7 +55,7 @@ public class Server extends Thread {
       this.tail.setToken(false);
       this.tail.isToken();
       this.tail = this.tail.getNext();
-      System.out.println("Cliente actual: " + this.tail.getNameNode());
+      this.ventana.agregarLineaLog("Cliente actual: " + this.tail.getNameNode());
       this.tail.setToken(true);
       this.tail.isToken();
     }

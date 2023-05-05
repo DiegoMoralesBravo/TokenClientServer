@@ -10,14 +10,15 @@ public class App {
         Server server = new Server();
         server.start();
 
+        VentanaServidor ventana = new VentanaServidor();
+        ventana.agregarLineaLog("El servidor ha iniciado.");
+
         while (flag) {
             System.out.println("Esperando a multi clientes...");
 
             java.net.Socket Socket = SocketServidor.accept();
-
-            System.out.println("Se ha conectado un cliente: " + Socket);
-
-            server.enqueue(Socket);
+            ventana.agregarLineaLog("Se ha conectado un cliente: " + Socket);
+            server.enqueue(Socket, ventana);
             System.out.println(Socket);
         }
         SocketServidor.close();

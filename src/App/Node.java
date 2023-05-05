@@ -1,5 +1,6 @@
 package App;
 
+import java.awt.Color;
 import java.io.*;
 import java.net.*;
 
@@ -10,16 +11,20 @@ public class Node extends Thread {
   private Socket socketCliente;
   private PrintWriter salida;
   private BufferedReader entrada;
+  private VentanaServidor ventana;
+  private int posicion;
 
-  public Node(Node next, Socket socketCliente) {
+  public Node(Node next, Socket socketCliente, VentanaServidor ventana) {
     this.next = next;
     this.socketCliente = socketCliente;
+    this.ventana = ventana;
+    this.posicion = ventana.posicionLista();
     try {
       this.entrada = new BufferedReader(new InputStreamReader(this.socketCliente.getInputStream()));
       this.salida = new PrintWriter(this.socketCliente.getOutputStream(), true);
-      System.out.println("Esperando nombre");
       this.name = entrada.readLine();
-      System.out.println("Nombre asignado: ");
+      ventana.agregarLineaLog("Cliente agregado: " + this.name);
+      ventana.agregarElementoLista(this.name);
       System.out.println(this.name);
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -45,6 +50,11 @@ public class Node extends Thread {
   }
 
   public void setToken(boolean token) {
+    if (token) {
+      this.ventana.seleccionarElementoLista(this.posicion, Color.GREEN);
+    } else {
+      this.ventana.seleccionarElementoLista(this.posicion, Color.BLACK);
+    }
     this.token = token;
   }
 
@@ -57,8 +67,8 @@ public class Node extends Thread {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      System.out.println("Mensaje recibido " + this.name + ": " + mensaje);
       this.salida.println("Mensaje recibido " + this.name + ": " + mensaje);
+      this.ventana.agregarLineaLog("Mensaje recibido " + this.name + ": " + mensaje);
     }
   }
 }
