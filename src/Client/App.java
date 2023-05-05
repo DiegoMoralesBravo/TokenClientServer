@@ -2,28 +2,50 @@ package Client;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 public class App {
   public static void main(String[] args) throws Exception {
-    Scanner scanner = new Scanner(System.in);
     boolean flag = true;
-
+    String mensaje = "";
     try {
       InetAddress AdressServidor = InetAddress.getByName("sofi");
       Socket SocketCliente = new Socket(AdressServidor, 9090);
       PrintWriter salida = new PrintWriter(SocketCliente.getOutputStream(), true);
-      System.out.println("Conexion aceptada!");
-      System.out.println("Enter client name");
-      String clientName = scanner.nextLine();
-      salida.println(clientName);
-      while (flag)
+      BufferedReader entrada = new BufferedReader(new InputStreamReader(SocketCliente.getInputStream()));
+      Ventana ventana = new Ventana();
 
-      scanner.close();
+      String clientName = "";
+      while (ventana.getName().equals("")) {
+        try {
+          System.out.println("Esperando nombre cliente");
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+      clientName = ventana.getName();
+      System.out.println("Se salio");
+      salida.println(clientName);
+      SendData sendData = new SendData(SocketCliente);
+      sendData.start();
+
+      while (flag) {
+        mensaje = entrada.readLine();
+        // System.out.println(mensaje);
+        if (mensaje.equals(clientName + " token: true")) {
+          sendData.setToken(true);
+        } else {
+          sendData.setToken(false);
+        }
+      }
+
       SocketCliente.close();
       salida.close();
+
     } catch (Exception e) {
       // TODO: handle exception
+      System.out.println("No hay conexion con server");
       System.out.println(e);
     }
   }

@@ -3,29 +3,31 @@ package App;
 import java.io.*;
 import java.net.*;
 
-public class Node {
+public class Node extends Thread {
   private Node next;
   private boolean token = false;
   private String name;
   private Socket socketCliente;
+  private PrintWriter salida;
+  private BufferedReader entrada;
 
   public Node(Node next, Socket socketCliente) {
     this.next = next;
-    this.name = "Por definir";
     this.socketCliente = socketCliente;
     try {
-      BufferedReader entrada = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
+      this.entrada = new BufferedReader(new InputStreamReader(this.socketCliente.getInputStream()));
+      this.salida = new PrintWriter(this.socketCliente.getOutputStream(), true);
+      System.out.println("Esperando nombre");
       this.name = entrada.readLine();
       System.out.println("Nombre asignado: ");
       System.out.println(this.name);
-      entrada.close();
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
 
-  public String getName() {
+  public String getNameNode() {
     return name;
   }
 
@@ -34,6 +36,7 @@ public class Node {
   }
 
   public boolean isToken() {
+    this.salida.println(this.name + " token: " + this.token);
     return token;
   }
 
@@ -43,5 +46,19 @@ public class Node {
 
   public void setToken(boolean token) {
     this.token = token;
+  }
+
+  public void run() {
+    String mensaje = "";
+    while (true) {
+      try {
+        mensaje = this.entrada.readLine();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      System.out.println("Mensaje recibido " + this.name + ": " + mensaje);
+      this.salida.println("Mensaje recibido " + this.name + ": " + mensaje);
+    }
   }
 }

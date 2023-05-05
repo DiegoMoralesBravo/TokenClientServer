@@ -34,6 +34,7 @@ public class Server extends Thread {
 
   public void enqueue(java.net.Socket Socket) {
     Node newest = new Node(null, Socket);
+    newest.start();
     if (this.is_empty()) {
       newest.setNext(newest);
     } else {
@@ -45,22 +46,26 @@ public class Server extends Thread {
   }
 
   public void rotate() {
+
     if (this.size > 0) {
+      this.tail.setToken(false);
+      this.tail.isToken();
       this.tail = this.tail.getNext();
-      System.out.println("El nombre de la cola:");
-      System.out.println(this.tail.getName());
+      System.out.println("Cliente actual: " + this.tail.getNameNode());
+      this.tail.setToken(true);
+      this.tail.isToken();
     }
   }
 
   public void run() {
     while (true) {
-      rotate();
       try {
         Thread.sleep(2000);
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+      rotate();
     }
   }
 }
