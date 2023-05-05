@@ -1,6 +1,6 @@
 package App;
 
-public class Server {
+public class Server extends Thread {
   private Node tail;
   private int size;
 
@@ -32,19 +32,8 @@ public class Server {
     return this.tail.getNext();
   }
 
-  public Node dequeue() {
-    Node oldhead = this.tail.getNext();
-    if (this.size == 1) {
-      this.tail = null;
-    } else {
-      this.tail.setNext(oldhead.getNext());
-    }
-    this.size -= 1;
-    return oldhead;
-  }
-
-  public void enqueue(String name) {
-    Node newest = new Node(null, name);
+  public void enqueue(java.net.Socket Socket) {
+    Node newest = new Node(null, Socket);
     if (this.is_empty()) {
       newest.setNext(newest);
     } else {
@@ -58,6 +47,20 @@ public class Server {
   public void rotate() {
     if (this.size > 0) {
       this.tail = this.tail.getNext();
+      System.out.println("El nombre de la cola:");
+      System.out.println(this.tail.getName());
+    }
+  }
+
+  public void run() {
+    while (true) {
+      rotate();
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
   }
 }

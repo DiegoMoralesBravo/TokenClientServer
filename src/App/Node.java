@@ -1,13 +1,28 @@
 package App;
 
+import java.io.*;
+import java.net.*;
+
 public class Node {
   private Node next;
   private boolean token = false;
   private String name;
+  private Socket socketCliente;
 
-  public Node(Node next, String name) {
+  public Node(Node next, Socket socketCliente) {
     this.next = next;
-    this.name = name;
+    this.name = "Por definir";
+    this.socketCliente = socketCliente;
+    try {
+      BufferedReader entrada = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
+      this.name = entrada.readLine();
+      System.out.println("Nombre asignado: ");
+      System.out.println(this.name);
+      entrada.close();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   public String getName() {

@@ -4,8 +4,10 @@ import java.net.ServerSocket;
 
 public class App {
     public static void main(String[] args) throws Exception {
+
         ServerSocket SocketServidor = new ServerSocket(9090);
         Server server = new Server();
+        server.start();
 
         while (true) {
             // Imprimimos un mensaje para indicar que estamos esperando a los clientes
@@ -16,14 +18,9 @@ public class App {
 
             System.out.println("Se ha conectado un cliente: " + Socket);
 
-            // server.enqueue("Diego");
+            server.enqueue(Socket);
             System.out.println(Socket);
-            Thread.sleep(6000);
-
-            // // Creamos un nuevo hilo para manejar la conexión del cliente
-            // ServerThread hiloCliente = new ServerThread(Socket, SocketServidor);
-            // hiloCliente.start();
-            SocketServidor.close();
         }
+        // SocketServidor.close();
     }
 }
