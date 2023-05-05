@@ -8,12 +8,12 @@ import java.awt.event.ActionListener;
 
 public class VentanaConexion extends JFrame {
 
-  public static String name = "";
+  public static String mensaje = "";
 
   private JLabel token;
   private JLabel label;
   private JLabel info;
-  private JLabel log;
+  private JTextArea log;
   private JTextField texto;
   private JButton boton;
 
@@ -28,14 +28,16 @@ public class VentanaConexion extends JFrame {
     this.token = new JLabel();
     this.label = new JLabel();
     this.info = new JLabel();
-    this.log = new JLabel();
+    this.log = new JTextArea(20, 20);
     this.texto = new JTextField();
     this.boton = new JButton("Enviar");
 
+    log.setLineWrap(true);
+    log.setWrapStyleWord(true);
+
     this.label.setText("Mensaje: ");
     this.token.setText("TOKEN");
-    this.info.setText("Log");
-    this.log.setText("Informacion");
+    this.info.setText("Log: ");
 
     // Establecer las posiciones y tamaños de los componentes
     this.label.setBounds(70, 50, 100, 30); // posición x=50, y=50, ancho=100, alto=30
@@ -43,8 +45,8 @@ public class VentanaConexion extends JFrame {
     this.boton.setBounds(100, 100, 100, 30); // posición x=100, y=100, ancho=100, alto=30
 
     this.token.setBounds(400, 5, 50, 50); // posición x=50, y=50, ancho=100, alto=30
-    this.info.setBounds(300, 40, 200, 30); // posición x=50, y=50, ancho=100, alto=30
-    this.log.setBounds(300, 70, 200, 30); // posición x=50, y=50, ancho=100, alto=30
+    this.info.setBounds(250, 40, 200, 30); // posición x=50, y=50, ancho=100, alto=30
+    this.log.setBounds(250, 80, 200, 50); // posición x=50, y=50, ancho=100, alto=30
 
     // Desactivar el layout manager y añadir los componentes directamente al content
     getContentPane().setLayout(null);
@@ -55,35 +57,40 @@ public class VentanaConexion extends JFrame {
     getContentPane().add(texto);
     getContentPane().add(boton);
 
-    // // Agregar un evento al botón
-    // boton.addActionListener(new ActionListener() {
-    // @Override
-    // public void actionPerformed(ActionEvent e) {
-    // // Leer el valor del input texto
-    // String cliente = texto.getText();
-    // System.out.println("Conectando con el cliente: " + cliente);
-    // name = cliente;
-    // setVisible(false);
-    // }
-    // });
+    // Agregar un evento al botón
+    boton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        // Leer el valor del input texto
+        mensaje = texto.getText();
+        texto.setText("");
+      }
+    });
 
     // Mostrar la ventana
     setVisible(true);
   }
 
-  public String getName() {
-    return name;
+  public String getMensaje() {
+    return mensaje;
   }
 
-  public String set() {
-    return name;
+  public void clearMensaje() {
+    mensaje = "";
   }
 
   public void setColorToken(boolean flag) {
-    if(flag){
-      this.token.setForeground(Color.GREEN);;
-    }else {
-      this.token.setForeground(Color.RED);;
+    if (flag) {
+      this.token.setForeground(Color.GREEN);
+      ;
+    } else {
+      this.token.setForeground(Color.RED);
+      ;
     }
+  }
+
+  public void setLog(String info) {
+    this.log.setText("");
+    this.log.setText(info);
   }
 }
