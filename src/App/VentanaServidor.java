@@ -77,6 +77,13 @@ public class VentanaServidor extends JFrame {
     scrollPaneLista.repaint();
   }
 
+  public void eliminarElementoLista(int posicion) {
+    panelLista.remove(posicion);
+    listaEtiquetas.remove(posicion);
+    scrollPaneLista.revalidate();
+    scrollPaneLista.repaint();
+  }
+
   public void seleccionarElementoLista(int posicion, Color color) {
     if (posicion >= 0 && posicion < listaEtiquetas.size()) {
       JLabel label = listaEtiquetas.get(posicion);

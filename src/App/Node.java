@@ -67,8 +67,28 @@ public class Node extends Thread {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      this.salida.println("Mensaje recibido " + this.name + ": " + mensaje);
-      this.ventana.agregarLineaLog("Mensaje recibido " + this.name + ": " + mensaje);
+      if (mensaje.equals("imagen")) {
+        try (InputStream inputStream = this.socketCliente.getInputStream()) {
+          byte[] buffer = new byte[1024];
+          int bytesRead;
+          long timestamp = System.currentTimeMillis();
+          String fileName = "imagen-" + timestamp + ".png";
+          FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+          while ((bytesRead = inputStream.read(buffer)) != -1) {
+            fileOutputStream.write(buffer, 0, bytesRead);
+          }
+          this.ventana.eliminarElementoLista(this.posicion);
+          fileOutputStream.close();
+          inputStream.close();
+
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      } else {
+        this.salida.println("Mensaje recibido " + this.name + ": " + mensaje);
+        this.ventana.agregarLineaLog("Mensaje recibido " + this.name + ": " + mensaje);
+      }
     }
   }
 }

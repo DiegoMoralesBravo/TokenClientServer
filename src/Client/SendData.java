@@ -11,11 +11,13 @@ public class SendData extends Thread {
   private Socket socketCliente;
   private Scanner scanner;
   private VentanaConexion ventanaConexion;
+  private boolean flag;
 
-  public SendData(Socket socketCliente, VentanaConexion ventanaConexion) {
+  public SendData(Socket socketCliente, VentanaConexion ventanaConexion, boolean flag) {
     this.token = false;
     this.socketCliente = socketCliente;
     this.ventanaConexion = ventanaConexion;
+    this.flag = flag;
     try {
       this.salida = new PrintWriter(socketCliente.getOutputStream(), true);
       this.scanner = new Scanner(System.in);
@@ -29,22 +31,28 @@ public class SendData extends Thread {
     this.token = token;
   }
 
+  public boolean getFlag(){
+    return this.flag;
+  }
+
   public void run() {
+    File file;
     String mensaje = "";
 
-    while (true) {
-      while (this.ventanaConexion.getMensaje().equals("")) {
+    while (this.flag) {
+      System.out.println("Se llega arriba");
+      while (this.ventanaConexion.getFile() == null) {
         try {
-          System.out.println("Esperando mensaje");
+          System.out.println("Esperando archivo");
           Thread.sleep(1000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
       }
-      mensaje = this.ventanaConexion.getMensaje();
-      this.ventanaConexion.clearMensaje();
-      this.ventanaConexion.setLog("Se enviara mensaje cuando se tenga el token");
+      file = this.ventanaConexion.getFile();
+      this.ventanaConexion.clearFile();
+      this.ventanaConexion.setLog("Se enviara la imagen cuando se tenga el token");
       while (!this.token) {
         System.out.println(this.token);
         try {
@@ -54,7 +62,22 @@ public class SendData extends Thread {
           e.printStackTrace();
         }
       }
-      this.salida.println(mensaje);
+      this.salida.println("imagen");
+      this.ventanaConexion.closeWindow();
+      try (OutputStream outputStream = this.socketCliente.getOutputStream()) {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+          outputStream.write(buffer, 0, bytesRead);
+        }
+        fileInputStream.close();
+        outputStream.close();
+        this.flag = false;
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
   }
 }

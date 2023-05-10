@@ -27,7 +27,7 @@ public class App {
       clientName = ventana.getName();
       salida.println(clientName);
       VentanaConexion ventanaConexion = new VentanaConexion(clientName);
-      SendData sendData = new SendData(SocketCliente, ventanaConexion);
+      SendData sendData = new SendData(SocketCliente, ventanaConexion, flag);
       sendData.start();
 
       while (flag) {
@@ -36,14 +36,15 @@ public class App {
         if (mensaje.equals(clientName + " token: true")) {
           sendData.setToken(true);
           ventanaConexion.setColorToken(true);
+          flag = sendData.getFlag();
         } else if (mensaje.equals(clientName + " token: false")) {
           sendData.setToken(false);
           ventanaConexion.setColorToken(false);
+          flag = sendData.getFlag();
         } else {
           ventanaConexion.setLog(mensaje);
         }
       }
-
       SocketCliente.close();
       salida.close();
 

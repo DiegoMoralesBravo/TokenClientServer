@@ -55,7 +55,6 @@ public class Server extends Thread {
       this.tail.setToken(false);
       this.tail.isToken();
       this.tail = this.tail.getNext();
-      this.ventana.agregarLineaLog("Cliente actual: " + this.tail.getNameNode());
       this.tail.setToken(true);
       this.tail.isToken();
     }
@@ -64,7 +63,7 @@ public class Server extends Thread {
   public void run() {
     while (true) {
       try {
-        Thread.sleep(2000);
+        Thread.sleep(500);
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
