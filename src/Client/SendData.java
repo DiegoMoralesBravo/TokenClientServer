@@ -31,7 +31,7 @@ public class SendData extends Thread {
     this.token = token;
   }
 
-  public boolean getFlag(){
+  public boolean getFlag() {
     return this.flag;
   }
 
@@ -41,7 +41,7 @@ public class SendData extends Thread {
 
     while (this.flag) {
       System.out.println("Se llega arriba");
-      while (this.ventanaConexion.getFile() == null) {
+      while (this.ventanaConexion.getFile() == null && this.ventanaConexion.getMensaje().equals("")) {
         try {
           System.out.println("Esperando archivo");
           Thread.sleep(1000);
@@ -50,34 +50,51 @@ public class SendData extends Thread {
           e.printStackTrace();
         }
       }
-      file = this.ventanaConexion.getFile();
-      this.ventanaConexion.clearFile();
-      this.ventanaConexion.setLog("Se enviara la imagen cuando se tenga el token");
-      while (!this.token) {
-        System.out.println(this.token);
-        try {
-          Thread.sleep(1000); // Revisar este tiempo
-        } catch (InterruptedException e) {
+      if (this.ventanaConexion.getFile() != null) {
+        file = this.ventanaConexion.getFile();
+        this.ventanaConexion.clearFile();
+        this.ventanaConexion.setLog("Se enviara la imagen cuando se tenga el token");
+        while (!this.token) {
+          System.out.println(this.token);
+          try {
+            Thread.sleep(1000); // Revisar este tiempo
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+        this.salida.println("imagen");
+        this.ventanaConexion.closeWindow();
+        try (OutputStream outputStream = this.socketCliente.getOutputStream()) {
+          FileInputStream fileInputStream = new FileInputStream(file);
+          byte[] buffer = new byte[1024];
+          int bytesRead;
+          while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+          }
+          fileInputStream.close();
+          outputStream.close();
+          this.flag = false;
+        } catch (IOException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
-      }
-      this.salida.println("imagen");
-      this.ventanaConexion.closeWindow();
-      try (OutputStream outputStream = this.socketCliente.getOutputStream()) {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-          outputStream.write(buffer, 0, bytesRead);
+      } else {
+        mensaje = this.ventanaConexion.getMensaje();
+        this.ventanaConexion.clearMensaje();
+        this.ventanaConexion.setLog("Se enviara mensaje cuando se tenga el token");
+        while (!this.token) {
+          System.out.println(this.token);
+          try {
+            Thread.sleep(1000); // Revisar este tiempo
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
         }
-        fileInputStream.close();
-        outputStream.close();
-        this.flag = false;
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        this.salida.println(mensaje);
       }
+
     }
   }
 }

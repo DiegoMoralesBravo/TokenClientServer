@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 public class App {
     public static void main(String[] args) throws Exception {
 
-        boolean flag = true;
         ServerSocket SocketServidor = new ServerSocket(9090);
         Server server = new Server();
         server.start();
@@ -13,7 +12,7 @@ public class App {
         VentanaServidor ventana = new VentanaServidor();
         ventana.agregarLineaLog("El servidor ha iniciado.");
 
-        while (flag) {
+        while (true) {
             System.out.println("Esperando a multi clientes...");
 
             java.net.Socket Socket = SocketServidor.accept();
@@ -21,6 +20,5 @@ public class App {
             server.enqueue(Socket, ventana);
             System.out.println(Socket);
         }
-        SocketServidor.close();
     }
 }
